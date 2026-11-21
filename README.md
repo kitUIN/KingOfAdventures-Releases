@@ -1,6 +1,7 @@
 # KingOfAdventures-Releases
 
 《冒险王·神兵传奇》K版（KitUIN复刻版）的 Windows 版本下载、更新公告与问题反馈。
+
 根据原《冒险王·神兵传奇》Flash版进行的Unity复刻版本，并再次基础上进行衍生开发，仅供学习交流使用，禁止用于商业。
 
 ## 后续功能衍生
