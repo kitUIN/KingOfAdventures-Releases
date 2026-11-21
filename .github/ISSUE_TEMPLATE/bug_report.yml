@@ -1,0 +1,25 @@
+name: BUG 上报
+description: 报告游戏中可以观察到的问题
+title: "[BUG] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: 游戏版本
+      description: 可在主菜单的「关于 → 本作作者」查看版本号。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请写明所在关卡、游戏模式和触发问题的操作。
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: 实际表现与预期结果
+      description: 可以附上截图或录像。
+    validations:
+      required: true
