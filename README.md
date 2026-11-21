@@ -28,3 +28,7 @@
 - [ ] 商城系统
 
 ## 图片预览
+
+## 鸣谢
+- 《冒险王·神兵传奇》Flash版
+- [libzt](https://github.com/zerotier/libzt)
