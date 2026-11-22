@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/11bf59c5-d352-4855-8878-c6f2eceffb2f" width="256" height="256" alt="KingOfAdventures-KitUIN"></a>
+  <img src="https://github.com/user-attachments/assets/11bf59c5-d352-4855-8878-c6f2eceffb2f" width="256" height="256" alt="KingOfAdventures-kitUIN"></a>
 </p>
 <div align="center">
 
-# 冒险王·神兵传奇·K版(KitUIN复刻版)
+# 冒险王·神兵传奇·K版(kitUIN复刻版)
 
 ✨原《冒险王·神兵传奇》的复刻版，并进行衍生开发✨
 
@@ -11,7 +11,7 @@
 
 ## KingOfAdventures-Releases
 
-《冒险王·神兵传奇》K版（KitUIN复刻版）的 Windows 版本下载、更新公告与问题反馈。
+《冒险王·神兵传奇》K版（kitUIN复刻版）的 Windows 版本下载、更新公告与问题反馈。
 
 根据原《冒险王·神兵传奇》Flash版进行的Unity复刻版本，并在此基础上进行衍生开发，仅供学习交流使用，禁止用于商业。
 
@@ -32,6 +32,8 @@
 - [ ] 商城系统
 
 ## 图片预览
+
+
 
 ## 鸣谢
 - 《冒险王·神兵传奇》Flash版
