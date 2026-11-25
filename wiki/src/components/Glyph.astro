@@ -1,0 +1,17 @@
+---
+const {name, size=20} = Astro.props;
+const glyphs = {
+ book:'M3 4.5c3-1 6-.8 9 1.5 3-2.3 6-2.5 9-1.5v14c-3-.8-6-.4-9 1.5-3-1.9-6-2.3-9-1.5z M12 6v14',
+ search:'M20 20l-5-5 M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0',
+ arrow:'M5 12h14m-6-6 6 6-6 6', next:'m9 5 7 7-7 7',
+ compass:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M15.8 8.2l-2.2 5.4-5.4 2.2 2.2-5.4z',
+ flag:'M5 21V4c5-4 9 4 15 0v10c-6 4-10-4-15 0',
+ external:'M13 4h7v7 M20 4l-9 9 M10 6H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5',
+ menu:'M3 6h18M3 12h18M3 18h18', close:'m6 6 12 12 M18 6 6 18',
+ pen:'m4 15-1 6 6-1L21 8l-5-5z M13 6l5 5',
+ route:'M4 19h4l3-5 4 2 5-9 M4 10l3-4 4 3',
+ grid:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
+ mark:'M12 2l8 4v7c0 5-8 9-8 9s-8-4-8-9V6z M8 12l3 3 5-6'
+};
+---
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={glyphs[name]} /></svg>

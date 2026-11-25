@@ -1,0 +1,46 @@
+---
+import Shell from '../../layouts/Shell.astro';
+import notes from '../../data/notes.json';
+import Glyph from '../../components/Glyph.astro';
+import Links from '../../components/EntryLinks.astro';
+import {sections,art,pathFor,stageName,entry,dropSources,stageLoot,findStageMobs,stages,pets,items,stats,traits,version,tag,repo,subtitle} from '../../lib/guide.js';
+export function getStaticPaths(){return sections.flatMap(section=>section.rows.map(row=>({params:{group:section.key,id:row.id},props:{section,row}})));}
+const {section:s,row:r}=Astro.props;
+const g=s.key;
+const note=notes.find(n=>n.tag===tag&&n.group===g&&n.id===r.id);
+const sources=g==='items'?dropSources(r.id):[];
+const materialShop=g==='items'&&['2003','2004','2005'].includes(r.id);
+const starter=g==='items'&&['101','401','501','801'].includes(r.id);
+const pet=g==='enemies'?pets.find(p=>p.enemy===r.id):undefined;
+const statsLabels={hp:'生命',attack:'物攻',magicAttack:'魔攻',defense:'物防',magicDefense:'魔防',experience:'基础经验'};
+const origin={items:'物品目录、装备属性与战利品规则',enemies:'逐关敌人配置、波次和死亡奖励规则',stages:'选关节点、逐关战斗配置和营地交互规则',careers:'职业动作、快捷技能规则与 HUD 解锁等级',pets:'精灵目录、关卡特殊敌人和精灵仓库规则'}[g];
+---
+<Shell title={r.name} path={g+'/'+r.id+'/'}>
+<div class="wrap inner"><div class="crumb"><a href={pathFor(g)}>{s.title}</a><Glyph name="next" size={12}/>{r.name}</div>
+<article class="article"><header class={'article-head '+s.color}><div class="portrait"><img src={art(r.icon)} alt=""/></div><div><div class="eyeline">{s.title} <span>／</span> {g==='items'?'ID '+r.id:g==='enemies'?r.id:'K版 '+version}</div><h1>{r.name}</h1><p>{subtitle(g,r)}</p></div></header>
+{g==='items'&&<>
+<section><h2>获取方式</h2>
+{starter&&<p>{r.job}创建角色时自带此装备。</p>}{materialShop&&<p>可向<a href={pathFor('stages',0)}>营地武器商</a>购买，单价 100 哈斯币。</p>}
+{sources.map(({mob,locations,via})=><div class="source-row"><div><a class="strong-link" href={pathFor('enemies',mob.id)}>{mob.name}</a><small>{via}</small></div><div>{locations.map(loc=><a class="textlink" href={pathFor('stages',loc.stage)}>{stageName(loc.stage)}</a>)}</div></div>)}
+{!starter&&!materialShop&&!sources.length&&<p>1.4 的常规掉落、初始装备和营地出售规则中尚未确认此物品的获取途径。</p>}</section>
+{r.kind==='装备'?<><section><h2>基础属性与强化</h2>{r.enhancedName&&r.enhancedName!==r.name&&<p>强化至 <b>+5</b> 后更名为 <b>{r.enhancedName}</b>。</p>}
+<table><thead><tr><th>属性</th><th>基础值</th><th>每级强化</th><th>单条随机词条</th></tr></thead><tbody>{stats.map((label,i)=>(r.root[i]||r.add[i]||r.random[i])?<tr><td>{label}</td><td>{r.root[i]}</td><td>+{r.add[i]}</td><td>+{r.random[i]}</td></tr>:null)}</tbody></table>
+<p>营地强化上限为 +5，使用<a href={pathFor('items',Number(r.id)%100<5?'2001':'2002')}>{Number(r.id)%100<5?'低级':'高级'}强化石</a>。</p></section>
+<section><h2>品质如何判定</h2><p>看这件装备实际带有几条随机词条。同名装备的品质可以不同。</p><div class="qualities">{traits.map((t,i)=><span class={'q'+i}><i></i>{t} · {i}{i===5?'＋':''} 条</span>)}</div></section></>:<section><h2>用途</h2><p>{r.description||r.type}</p></section>}</>}
+{g==='enemies'&&<>
+<section><h2>出现地点</h2>{r.locations.map(l=><div class="source-row"><a class="strong-link" href={pathFor('stages',l.stage)}>{stageName(l.stage)}</a><span>{l.mode}{l.waves.length?' · 第 '+l.waves.join('、')+' 波':l.mode==='召唤配置'?' · 1.4 未确认实战登场':' · 按波次判定'}</span></div>)}</section>
+<section><h2>战利品</h2>{r.drops.length>0&&<>{['普通池','特殊池'].map(v=>r.drops.some(d=>d.via===v)&&<><h3>{v}</h3><Links group="items" ids={r.drops.filter(d=>d.via===v).map(d=>d.id)}/></>)}</>}
+{r.locations.some(l=>l.coins.length>0)&&<><h3>钱币</h3><Links group="items" ids={r.locations.flatMap(l=>l.coins)}/></>}{pet&&<><h3>击败后获得精灵</h3><Links group="pets" ids={[pet.id]}/></>}{r.id==='b7_1'&&<p>此表为分身配置，未计入关卡可获取物品。</p>}</section>
+<section><h2>战斗属性</h2>{r.locations.filter((l,i,a)=>a.findIndex(v=>JSON.stringify(v.stats)===JSON.stringify(l.stats))===i).map(l=><><h3>{r.locations.filter(v=>JSON.stringify(v.stats)===JSON.stringify(l.stats)).map(v=>'第 '+v.stage+' 关').join('、')}</h3><dl class="statgrid">{Object.entries(statsLabels).map(([k,v])=><div><dt>{v}</dt><dd>{l.stats[k]}</dd></div>)}</dl></>)}</section></>}
+{g==='stages'&&<>
+{r.id==='0'?<section><h2>营地服务</h2><div class="source-row"><b>左侧 NPC · 精灵仓库</b><a href={pathFor('pets')}>查看、出战或休息精灵 →</a></div><div class="source-row"><b>右侧 NPC · 武器商</b><a href={pathFor('items','2001')}>装备强化与宝石购买 →</a></div><p>走到 NPC 或右侧传送门前，按当前角色的上方向键交互。</p></section>:<section><h2>进入条件</h2><p>{r.id==='1'?'初始开放，从营地右侧传送门进入。':'通关以下关卡后，在营地的地图中选择。'}</p><Links group="stages" ids={stages.filter(v=>v.next.includes(Number(r.id))).map(v=>v.id)}/></section>}
+{r.next.length>0&&<section><h2>{r.id==='0'?'初次出发':'通关后解锁'}</h2><Links group="stages" ids={r.next}/></section>}
+{r.id!=='0'&&<><section><h2>关卡敌人</h2>{r.boss&&<><h3>关底首领</h3><Links group="enemies" ids={[r.boss]}/></>}<h3>固定登场</h3><Links group="enemies" ids={findStageMobs(r).filter(m=>m.locations.some(l=>String(l.stage)===r.id&&l.mode==='固定登场')).map(m=>m.id)}/>
+{r.random.length>0&&<><h3>随机出现</h3><p>每次触发新波次时，尚未出现的特殊敌人有 30% 机会加入该波。</p><Links group="enemies" ids={r.random}/></>}{r.reserves.length>0&&<><h3>召唤配置</h3><p>此关配置含分身，1.4 的固定波次和随机追加列表均未安排它登场。</p><Links group="enemies" ids={r.reserves}/></>}</section>
+<section><h2>逐波敌人</h2>{r.waves.map((wave,i)=><details><summary>第 {i+1} 波 <small>{Object.values(wave).reduce((a,b)=>a+b,0)} 名敌人</small></summary><div class="wave">{Object.entries(wave).map(([id,n])=><a href={pathFor('enemies',id)}>{entry('enemies',id).name} × {n}</a>)}</div></details>)}</section>
+<section><h2>可获取物品</h2><Links group="items" ids={stageLoot(r).map(x=>x.id)}/></section></>}</>}
+{g==='careers'&&<><section><h2>普通攻击</h2><p>{r.basic}</p><a class="textlink" href={pathFor('items')+'?job='+encodeURIComponent(r.name)}>查看{r.name}装备 →</a></section><section><h2>快捷技能</h2><p>逻辑以每秒 24 tick 运行。等级和魔法值均满足条件时才可施放。</p>{r.skills.map(sk=><div class="skill" id={'skill-'+sk.slot}><img src={art(sk.icon)} alt=""/><div><h3>技能 {sk.slot} <small>{sk.action}</small></h3><b>等级 {sk.level} · 消耗 {sk.mp} MP</b><p>{sk.text}</p></div></div>)}</section></>}
+{g==='pets'&&<><section><h2>获取与出战</h2><p>由玩家亲自击败对应特殊敌人，即可获得 1 级精灵。相同种类只收录一次；当前没有出战精灵时会自动出战。</p><Links group="enemies" ids={[r.enemy]}/><h3>获取地点</h3><Links group="stages" ids={entry('enemies',r.enemy).locations.filter(l=>l.mode==='随机出现').map(l=>l.stage)}/><p>前往<a href={pathFor('stages',0)}>营地左侧的精灵仓库</a>切换出战或休息。战斗内取得的精灵随通关离场保存。</p></section>
+<section><h2>进化路线</h2><div class="evolution">{r.forms.map(f=><div><img src={art(f.icon)} alt=""/><small>等级 {f.level}</small><h3>{f.name}</h3><p>{f.info}</p></div>)}</div><p>10 级和 20 级进化，精灵的等级上限为 30 级。</p></section></>}
+{note&&<section><h2>{note.title}</h2><p>{note.text}</p></section>}
+<aside class="evidence"><Glyph name="mark" size={18}/><div><b>资料依据</b><p>该版游戏配置 · {origin}。关联地点、掉落来源及获取条件根据正式版规则推导。</p><a href={repo+'/releases/tag/'+tag}>查看 {version} 正式版 <Glyph name="external" size={12}/></a></div></aside></article></div></Shell>

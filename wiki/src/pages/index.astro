@@ -1,0 +1,26 @@
+---
+import Shell from '../layouts/Shell.astro';
+import Search from '../components/Search.astro';
+import Glyph from '../components/Glyph.astro';
+import {sections,stages,art,pathFor,entry} from '../lib/guide.js';
+const shortcuts=[['items','102','电光'],['stages','2','第 2 关'],['pets','1','紫月幼兽']];
+const second=entry('stages','2');
+---
+<Shell title="图鉴首页" home>
+<section class="hero"><div class="hero-bg" style={`background-image:url("${art('hero-land.webp')}")`}></div>
+<div class="wrap herowrap"><div class="hero-art" aria-hidden="true"><div class="orbit"></div><img class="mage" src={art('mage.webp')} alt="" fetchpriority="high"/><img class="fighter" src={art('warrior.webp')} alt="" fetchpriority="high"/></div>
+<div class="intro"><div class="hero-series"><span></span>冒险王 · 神兵传奇</div>
+<h1>冒险者图鉴</h1><p>查装备掉落，寻精灵踪迹，探索每一条关卡路线。</p><Search/>
+<div class="shortcuts"><b>快捷查询</b>{shortcuts.map(([g,id,name])=><a href={pathFor(g,id)}>{name}<Glyph name="next" size={11}/></a>)}</div></div></div>
+</section>
+<div class="wrap homebody">
+<section id="catalog"><div class="secthead"><div><Glyph name="book" size={25}/><h2>图鉴目录</h2></div><span class="rule"></span><small>五大分类</small></div>
+<div class="category-grid">{sections.map(s=><a class={'category '+s.color} href={pathFor(s.key)}>
+<div class="cat-art"><div class="seal"></div><img src={art(s.icon)} alt=""/></div>
+<div class="cat-title"><h3>{s.title}</h3><p>{s.note}</p></div><div class="cat-tail"><span>{s.rows.length} {s.key==='careers'?'种职业':s.key==='pets'?'条进化线':'个词条'}</span><Glyph name="arrow" size={17}/></div>
+</a>)}</div></section>
+<section id="routes"><div class="secthead"><div><Glyph name="compass" size={26}/><h2>关卡路线</h2></div><span class="rule"></span><a href={pathFor('stages')}>全部关卡 <Glyph name="arrow" size={16}/></a></div>
+<div class="route-panel"><div class="route-info"><div class="route-mark"><Glyph name="flag" size={17}/> 解锁分支</div><h3>从原色村出发</h3><p>通关原色广场后，可以推进主线，也可以前往两处支线关卡。</p></div>
+<div class="trail"><div class="trail-start">{[1,2].map((id,i)=><><a class:list={['stop',i===1&&'selected']} href={pathFor('stages',id)}><span>第 {id} 关</span><b>{stages[id].name}</b></a>{i===0&&<span class="connector" aria-hidden="true">→</span>}</>)}</div>
+<div class="fork">{second.next.map((id,i)=><a href={pathFor('stages',id)}><small>{i===0?'主线':'支线'}</small><span>第 {id} 关 · {stages[id].name}</span><Glyph name="next" size={13}/></a>)}</div></div></div></section></div>
+</Shell>

@@ -1,0 +1,23 @@
+---
+import Shell from '../../layouts/Shell.astro';
+import Glyph from '../../components/Glyph.astro';
+import {sections,art,pathFor,subtitle} from '../../lib/guide.js';
+export function getStaticPaths(){return sections.map(section=>({params:{group:section.key},props:{section}}));}
+const {section:s}=Astro.props;
+const fields=s.key==='items'?[['job','职业'],['level','等级'],['type','部位／类型']]:[];
+---
+<Shell title={s.title} path={s.key+'/'}>
+<div class="wrap inner"><div class="crumb">图鉴目录 <Glyph name="next" size={12}/> {s.title}</div>
+<div class={'section-title '+s.color}><div><h1>{s.title}</h1><p>{s.note} <span>／</span> {s.rows.length} {s.key==='pets'?'条进化线':'个词条'}</p></div><img src={art(s.icon)} alt=""/></div>
+{fields.length>0&&<form class="filters"><span><Glyph name="grid" size={16}/> 筛选</span>{fields.map(([key,label])=><label>{label}<select name={key}><option value="">全部</option>{[...new Set(s.rows.map(r=>r[key]).filter(Boolean))].sort(key==='level'?(a,b)=>a-b:undefined).map(v=><option value={v}>{v}</option>)}</select></label>)}<button type="reset">重置</button></form>}
+<div class="records">{s.rows.map(row=><a class="record" data-job={row.job||''} data-level={row.level||''} data-type={row.type} href={pathFor(s.key,row.id)}><span class={'tile '+s.color}><img src={art(row.icon)} alt="" loading="lazy"/></span><span><b>{row.name}</b><small>{subtitle(s.key,row)}</small></span><Glyph name="next" size={16}/></a>)}</div><p class="empty" role="status" hidden>当前筛选没有匹配的物品。</p></div></Shell>
+<script>
+const form=document.querySelector<HTMLFormElement>('.filters');
+if(form){
+  const controls=Array.from(form.querySelectorAll('select'));
+  const filter=()=>{let count=0;document.querySelectorAll<HTMLElement>('.record').forEach(r=>{r.hidden=!controls.every(c=>!c.value||r.dataset[c.name]===c.value);if(!r.hidden)count++;});document.querySelector<HTMLElement>('.empty')!.hidden=count>0;};
+  form.addEventListener('change',filter);form.addEventListener('reset',()=>requestAnimationFrame(filter));
+  const pref=new URLSearchParams(location.search);
+  controls.forEach(c=>{if(pref.has(c.name))c.value=pref.get(c.name)!});filter();
+}
+</script>

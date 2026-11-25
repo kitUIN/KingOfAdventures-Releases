@@ -1,0 +1,36 @@
+name: Wiki 词条改稿
+description: 对某个图鉴词条提出有依据的修改
+title: "[Wiki] "
+body:
+  - type: input
+    id: article
+    attributes:
+      label: 词条名称
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 适用游戏版本
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: 词条网址
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: 建议替换的文字或数据
+      description: 请标出原段落，并写出你希望显示的内容。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 修改依据
+      description: 可填写游戏版本、观察条件、复现步骤或其他可核对的资料。
+    validations:
+      required: true

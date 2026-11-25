@@ -1,0 +1,56 @@
+---
+import Glyph from './Glyph.astro';
+import {searchRows} from '../lib/guide.js';
+---
+<guide-search>
+  <form class="search-box" role="search">
+    <Glyph name="search" size={22}/><input type="search" autocomplete="off" aria-label="搜索全站图鉴" aria-controls="matches" aria-expanded="false" role="combobox" aria-autocomplete="list" placeholder="搜索装备、怪物、关卡、精灵…" /><kbd>/</kbd>
+  </form>
+  <div id="matches" role="listbox" class="matches" hidden></div>
+  <script type="application/json" data-index set:html={JSON.stringify(searchRows).replace(/</g,'\\u003c')}></script>
+</guide-search>
+<script>
+class GuideSearch extends HTMLElement {
+  connectedCallback() {
+    const input=this.querySelector('input')!, box=this.querySelector<HTMLElement>('.matches')!;
+    const rows=JSON.parse(this.querySelector('[data-index]')!.textContent!);
+    const clean=(s:unknown)=>String(s).toLowerCase().replace(/\s/g,'');
+    let active=-1;
+    const close=()=>{ box.hidden=true; active=-1; input.setAttribute('aria-expanded','false'); input.removeAttribute('aria-activedescendant'); };
+    const show=()=>{
+      const q=clean(input.value);
+      if(!q) { close(); return; }
+      const results=rows.map((row:any)=>{
+        const terms=[row.name,...row.aliases].map(clean);
+        const score=terms.includes(q)?0:terms.some(t=>t.startsWith(q))?1:terms.some(t=>t.includes(q))?2:3;
+        return {row,score};
+      }).filter((r:any)=>r.score<3).sort((a:any,b:any)=>a.score-b.score);
+      box.replaceChildren(); active=-1; input.removeAttribute('aria-activedescendant');
+      for(const {row} of results){
+        const link=document.createElement('a'), img=document.createElement('img'), labels=document.createElement('span'), title=document.createElement('b'), detail=document.createElement('small');
+        link.href=row.href; link.setAttribute('role','option'); link.setAttribute('aria-selected','false'); link.id='match-'+box.childElementCount;
+        img.src=row.icon; img.alt=''; title.textContent=row.name; detail.textContent=row.group+' · '+(row.extra||row.sub);
+        labels.append(title,detail); link.append(img,labels); box.append(link);
+      }
+      if(!results.length) box.textContent='没有找到相关词条，试试游戏内名称或原始 ID。';
+      box.hidden=false; input.setAttribute('aria-expanded','true');
+    };
+    this.querySelector('form')!.addEventListener('submit',e=>{e.preventDefault(); const links=box.querySelectorAll('a'); links[Math.max(0,active)]?.click();});
+    input.addEventListener('input',show); input.addEventListener('focus',show);
+    input.addEventListener('keydown',e=>{
+      if(e.isComposing)return;
+      if(e.key==='Escape'){close();return;}
+      if(!['ArrowDown','ArrowUp'].includes(e.key))return;
+      e.preventDefault(); if(box.hidden)show();
+      const links=box.querySelectorAll('a'); if(!links.length)return;
+      active=active<0?(e.key==='ArrowDown'?0:links.length-1):(active+(e.key==='ArrowDown'?1:-1)+links.length)%links.length;
+      links.forEach((link,i)=>link.setAttribute('aria-selected',String(i===active)));
+      input.setAttribute('aria-activedescendant',links[active].id); links[active].scrollIntoView({block:'nearest'});
+    });
+    document.addEventListener('pointerdown',e=>{if(!this.contains(e.target as Node))close();});
+    this.addEventListener('focusout',e=>{if(!this.contains((e as FocusEvent).relatedTarget as Node))close();});
+    document.addEventListener('keydown',e=>{if(e.key==='/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)){e.preventDefault();input.focus();}});
+  }
+}
+customElements.define('guide-search',GuideSearch);
+</script>

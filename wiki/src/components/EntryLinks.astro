@@ -1,0 +1,5 @@
+---
+import {entry,art,pathFor} from '../lib/guide.js';
+const {group,ids}=Astro.props;
+---
+<div class="entry-links">{[...new Set(ids)].map(id=>{const r=entry(group,id);if(!r)throw new Error('Unknown '+group+'/'+id);return <a href={pathFor(group,id)}><img src={art(r.icon)} alt="" loading="lazy"/>{group==='stages'&&r.id!=='0'?'第 '+r.id+' 关 · ':''}{r.name}</a>})}</div>

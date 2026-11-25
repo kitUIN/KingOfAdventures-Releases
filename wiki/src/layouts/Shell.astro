@@ -1,0 +1,17 @@
+---
+import '../styles/site.css';
+import Glyph from '../components/Glyph.astro';
+import Search from '../components/Search.astro';
+import {url,art,repo,version,tag,feedback} from '../lib/guide.js';
+const {title,home=false,path=''}=Astro.props;
+---
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{home?'冒险者图鉴':title} · 冒险王神兵传奇 K版 Wiki</title><meta name="description" content={home?'查询冒险王·神兵传奇 K 版的装备掉落、怪物、关卡路线、职业技能和精灵进化。':title+' · 冒险王 K版玩家图鉴'}/><link rel="icon" href={art('brand.webp')}/></head>
+<body><a class="skip" href="#content">跳到正文</a>
+<header class="top"><div class="wrap headrow"><a class="brand" href={url()}><img src={art('brand.webp')} alt=""/><span>冒险王<strong>神兵传奇 · K版 Wiki</strong></span></a>
+<nav aria-label="主导航"><a class:list={[home&&'current']} href={url()}>首页</a><a href={url()+'#catalog'}>图鉴目录</a><a href={url()+'#routes'}>关卡路线</a></nav>
+<a class="release" href={repo+'/releases/tag/'+tag}><i></i>适用版本 {version}<Glyph name="external" size={13}/></a></div></header>
+{!home&&<div class="subsearch"><div class="wrap subrow"><a href={url()}><Glyph name="book" size={17}/> 图鉴首页</a><Search/></div></div>}
+<main id="content"><slot/></main>
+<footer><div class="wrap footrow"><div><b>冒险王 · 神兵传奇</b><span>K版玩家 Wiki · 版本 {version}</span></div><div class="footlinks"><a href={feedback(title,path)}><Glyph name="pen" size={15}/>建议修改</a><a href={repo+'/releases/tag/'+tag}>版本记录 <Glyph name="external" size={13}/></a></div></div></footer>
+</body></html>

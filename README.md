@@ -13,6 +13,8 @@
 
 《冒险王·神兵传奇》K版（kitUIN复刻版）的 Windows 版本下载、更新公告与问题反馈。
 
+[打开 K 版玩家 Wiki](https://kituin.github.io/KingOfAdventures-Releases/) · 查询装备掉落、关卡路线、职业技能与精灵进化。
+
 根据原《冒险王·神兵传奇》Flash版进行的Unity复刻版本，并在此基础上进行衍生开发，仅供学习交流使用，禁止用于商业。
 
 ## 复刻进度
