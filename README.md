@@ -22,7 +22,7 @@
 当前进度90%，部分画面与功能仍然缺失，但主体已经可玩
 
 ## 后续功能衍生
-- [x] 画面改进，多分辨率支持
+- [x] [画面改进](#%E7%94%BB%E9%9D%A2%E6%94%B9%E8%BF%9B)，多分辨率支持
 - [x] [伤害颜色](#%E4%BC%A4%E5%AE%B3%E9%A2%9C%E8%89%B2)区分
 - [x] [远程联机](#%E8%BF%9C%E7%A8%8B%E8%81%94%E6%9C%BA)功能
 - [ ] 九项基础属性(力量，体质，强壮，智力，知识，精神，敏捷，会心，幸运)
@@ -35,6 +35,15 @@
 - [ ] 货币系统
 - [ ] 商城系统
 - [ ] 药剂系统
+
+### 画面改进
+
+| 画面 | 源Flash | K版(本作) |
+|---|---|---|
+| 营地 | ![源 Flash 双人营地](assets/beautify/old/02-双人营地.png) | ![K 版双人营地](assets/beautify/new/02-双人营地.png) |
+| 背包 | ![源 Flash 背包](assets/beautify/old/01-背包.png) | ![K 版背包](assets/beautify/new/01-背包.png) |
+| 装备强化 | ![源 Flash 装备强化](assets/beautify/old/04-装备强化.png) | ![K 版装备强化](assets/beautify/new/04-装备强化.png) |
+| 精灵仓库 | ![源 Flash 精灵仓库](assets/beautify/old/03-精灵仓库.png) | ![K 版精灵仓库](assets/beautify/new/03-精灵仓库.png) |
 
 ### 伤害颜色
 
